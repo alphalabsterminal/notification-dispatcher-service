@@ -1,0 +1,30 @@
+name: Deploy to Windows VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout latest code
+        uses: actions/checkout@v4
+
+      - name: Install sshpass
+        run: sudo apt-get update && sudo apt-get install -y sshpass
+
+      - name: Deploy to VPS using password
+        env:
+          SSHPASS: ${{ secrets.VPS_PASSWORD }}
+        run: |
+          # The PowerShell commands to execute on the VPS
+          COMMAND="cd 'C:\apps\backend\notification-dispatcher-service'; git pull origin main; npm install; if (pm2 list | Select-String 'notification-dispatcher-service') { pm2 restart 'C:\apps\backend\notification-dispatcher-service\src\index.js' --name 'notification-dispatcher-service' -f } else { pm2 start 'C:\apps\backend\notification-dispatcher-service\src\index.js' --name 'notification-dispatcher-service' }"
+          
+          # Convert command to Base64 UTF-16LE for PowerShell -EncodedCommand
+          ENCODED=$(echo "$COMMAND" | iconv -f UTF-8 -t UTF-16LE | base64 -w 0)
+          
+          # SSH into VPS using password and run the encoded PowerShell command
+          sshpass -e ssh -o StrictHostKeyChecking=no -p ${{ secrets.VPS_PORT }} ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} powershell -EncodedCommand $ENCODED
