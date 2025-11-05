@@ -19,18 +19,18 @@ class NotificationDispatcherService {
             if (!data || data.length === 0) continue; // skip if no data in Redis
             
             if (this.signalService.isShortSign(data)) {
-                await this.dispatchSignal("short", symbol);
+                await this.dispatchSignal("short", symbol, data);
             }
 
             if (this.signalService.isLongSign(data)) {
-                await this.dispatchSignal("long", symbol);
+                await this.dispatchSignal("long", symbol, data);
             }
         }
 
         console.log("Done checking and dispatching!");
     }
 
-    async dispatchSignal(signalType, symbol) {
+    async dispatchSignal(signalType, symbol, data) {
         const users = await this.userService.getSubscribedUsers();
 
         for (const user of users) {
@@ -42,6 +42,7 @@ class NotificationDispatcherService {
                         symbol,
                         signal: signalType,
                         time: Date.now(),
+                        data: data,
                         userId: user.id,
                         platform: user.platform, // Should contains something like W, E(W for WA, E for Email)
                         countryCode: user.countryCode,
