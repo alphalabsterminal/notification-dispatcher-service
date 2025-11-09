@@ -1,11 +1,13 @@
-const { Kafka } = require("kafkajs");
-require("dotenv").config();
+import { Kafka } from "kafkajs";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const kafka = new Kafka({
     clientId: "notification-dispatcher",
-    brokers: [process.env.KAFKA_BROKER || "localhost:9092"]
+    brokers: [process.env.KAFKA_BROKER || "localhost:9092"],
 });
 
 const producer = kafka.producer();
 
-module.exports = { kafka, producer };
+export { kafka, producer };

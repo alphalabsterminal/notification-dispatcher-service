@@ -1,18 +1,26 @@
-require("dotenv").config();
-const RedisClient = require("./config/redis");
-const { producer } = require("./config/kafka");
-const RedisRepository = require("./repositories/RedisRepository");
-const SignalDetectionService = require("./services/SignalDetectionService");
-const NotificationDispatcherService = require("./services/NotificationDispatcherService");
-const UserService = require("./services/UserService");
-const BinanceService = require("./services/BinanceService");
+import dotenv from "dotenv";
+import RedisClient from "./config/redis.js";
+import { producer } from "./config/kafka.js";
+import RedisRepository from "./repositories/RedisRepository.js";
+import SignalDetectionService from "./services/SignalDetectionService.js";
+import NotificationDispatcherService from "./services/NotificationDispatcherService.js";
+import UserService from "./services/UserService.js";
+import BinanceService from "./services/BinanceService.js";
+
+dotenv.config();
 
 const redisRepo = new RedisRepository(RedisClient);
 const signalService = new SignalDetectionService();
 const userService = new UserService();
 const binanceService = new BinanceService();
 
-const dispatcher = new NotificationDispatcherService(redisRepo, signalService, userService, producer, binanceService);
+const dispatcher = new NotificationDispatcherService(
+    redisRepo,
+    signalService,
+    userService,
+    producer,
+    binanceService
+);
 
 (async () => {
     await producer.connect();

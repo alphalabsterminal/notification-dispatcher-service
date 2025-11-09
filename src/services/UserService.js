@@ -1,4 +1,4 @@
-class UserService {
+export default class UserService {
     getSubscribedUsers() {
         // this method will call user-service API to get user data
         return [
@@ -12,5 +12,3 @@ class UserService {
         ]
     }
 }
-
-module.exports = UserService;

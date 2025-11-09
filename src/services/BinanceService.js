@@ -1,5 +1,7 @@
-const axios = require("axios");
-require("dotenv").config();
+import axios from "axios";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 class BinanceService {
     constructor() {
@@ -14,4 +16,4 @@ class BinanceService {
     }
 }
 
-module.exports = BinanceService;
+export default BinanceService;

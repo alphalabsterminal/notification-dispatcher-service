@@ -1,4 +1,4 @@
-class SignalDetectionService {
+export default class SignalDetectionService {
     isShortSign(data) {
         if (data.length < 2) return false;
 
@@ -54,5 +54,3 @@ class SignalDetectionService {
         return ruleA || vdeltaHuge;
     }
 }
-
-module.exports = SignalDetectionService;

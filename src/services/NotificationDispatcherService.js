@@ -1,4 +1,4 @@
-class NotificationDispatcherService {
+export default class NotificationDispatcherService {
     constructor(redisRepo, signalService, userService, kafkaProducer, binanceService) {
         this.redisRepo = redisRepo;
         this.signalService = signalService;
@@ -17,7 +17,7 @@ class NotificationDispatcherService {
         for (const symbol of symbols) {
             const data = await this.redisRepo.getMarketData(symbol, oneHourAgo, now);
             if (!data || data.length === 0) continue; // skip if no data in Redis
-            
+
             if (this.signalService.isShortSign(data)) {
                 await this.dispatchSignal("short", symbol, data);
             }
@@ -36,23 +36,23 @@ class NotificationDispatcherService {
         for (const user of users) {
             await this.producer.send({
                 topic: "signal-notifications",
-                messages: [{
-                    key: symbol,
-                    value: JSON.stringify({
-                        symbol,
-                        signal: signalType,
-                        time: Date.now(),
-                        data: data,
-                        userId: user.id,
-                        platform: user.platform, // Should contains something like W, E(W for WA, E for Email)
-                        countryCode: user.countryCode,
-                        phoneNumber: user.phoneNumber,
-                        email: user.email
-                    })
-                }]
+                messages: [
+                    {
+                        key: symbol,
+                        value: JSON.stringify({
+                            symbol,
+                            signal: signalType,
+                            time: Date.now(),
+                            data,
+                            userId: user.id,
+                            platform: user.platform, // W = WhatsApp, E = Email
+                            countryCode: user.countryCode,
+                            phoneNumber: user.phoneNumber,
+                            email: user.email,
+                        }),
+                    },
+                ],
             });
         }
     }
 }
-
-module.exports = NotificationDispatcherService;
