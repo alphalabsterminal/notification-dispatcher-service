@@ -9,7 +9,7 @@ class BinanceService {
     }
 
     async getAllSymbols() {
-        const { data } = await axios.get(`${this.baseUrl}/exchangeInfo`);
+        const { data } = await axios.get(`https://fapi.binance.com/fapi/v1/exchangeInfo`);
         return data.symbols
             .filter(s => s.symbol.endsWith("USDT"))
             .map(s => s.symbol.toUpperCase());
