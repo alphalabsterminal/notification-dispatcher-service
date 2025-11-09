@@ -1,4 +1,6 @@
 import dotenv from "dotenv";
+dotenv.config();
+
 import RedisClient from "./config/redis.js";
 import { producer } from "./config/kafka.js";
 import RedisRepository from "./repositories/RedisRepository.js";
@@ -7,7 +9,6 @@ import NotificationDispatcherService from "./services/NotificationDispatcherServ
 import UserService from "./services/UserService.js";
 import BinanceService from "./services/BinanceService.js";
 
-dotenv.config();
 
 const redisRepo = new RedisRepository(RedisClient);
 const signalService = new SignalDetectionService();
