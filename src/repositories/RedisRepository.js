@@ -1,7 +1,6 @@
 export default class RedisRepository {
     constructor(redisClient) {
         this.redis = redisClient;
-        this.redis.connect();
     }
 
     async getMarketData(symbol, startTime, endTime) {
